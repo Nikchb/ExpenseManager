@@ -5,7 +5,7 @@ services:
     image: ${DOCKER_REGISTRY-}serverapp
     build:
       context: .
-      dockerfile: ServerApp/Dockerfile
+      dockerfile: ServerApp/DockerFile
     ports:
       - "5000:80"
   database:
