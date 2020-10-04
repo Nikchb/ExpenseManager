@@ -10,6 +10,8 @@ namespace ServerApp.Data
 {
     public class AppDbContext : IdentityDbContext<User>
     {
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Record> Records { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
         {            
@@ -18,7 +20,8 @@ namespace ServerApp.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);           
+            base.OnModelCreating(builder);
+            builder.Entity<Record>().HasKey(v => new { v.UserId, v.CategoryId });
         }        
     }
 }
