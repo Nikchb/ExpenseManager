@@ -20,7 +20,7 @@
     "ServerApp": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/ping",
+      "launchUrl": "api/ping/anonymous",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -29,7 +29,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/ping",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/ping/anonymous",
       "publishAllPorts": true
     }
   }
