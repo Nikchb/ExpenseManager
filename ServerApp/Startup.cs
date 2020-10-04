@@ -37,8 +37,8 @@ namespace ServerApp
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequiredLength = 8;
-                options.Password.RequiredUniqueChars = 4;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
             })
             .AddEntityFrameworkStores<AppDbContext>();
 

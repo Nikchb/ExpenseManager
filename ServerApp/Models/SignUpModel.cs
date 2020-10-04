@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace ServerApp.Models
 {
-    public class SignModel
+    public class SignUpModel : SignModel
     {
-        [EmailAddress]
         [Required]
-        public string Email { get; set; }       
-        
-        [Required]
-        [MinLength(6)]        
-        public string Password { get; set; }
+        public string Name { get; set; }
     }
 }

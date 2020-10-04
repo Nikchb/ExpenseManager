@@ -29,7 +29,7 @@ namespace ServerApp.Controllers
 
         [HttpPost]
         [Route("sign-up")]
-        public async Task<IActionResult> SingUp([FromBody] SignModel model)
+        public async Task<IActionResult> SingUp([FromBody] SignUpModel model)
         {
             if (model == null || ModelState.IsValid == false)
             {
@@ -39,7 +39,10 @@ namespace ServerApp.Controllers
             var user = new User
             {
                 UserName = model.Email,
-                Email = model.Email                
+                Email = model.Email,
+                Name = model.Name,
+                Bill = 10000,
+                Lang = "ru-RU"
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -53,7 +56,10 @@ namespace ServerApp.Controllers
                 }
                 return new BadRequestObjectResult(new { Message = "Sing Up Failed", Errors = dictionary });
             }
-            return Ok(new { Message = "Sign Up Successful" });
+            
+            var token = _tokenGenerator.GenerateToken(user.UserName, await _userManager.GetRolesAsync(user));
+           
+            return Ok(new { Token = token, Message = "Sign Up Successful" });
         }
 
         [HttpPost]
