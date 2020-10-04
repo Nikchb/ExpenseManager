@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using ServerApp.Data;
 using ServerApp.Data.Models;
 using ServerApp.Services;
+using System;
 
 namespace ServerApp
 {
@@ -26,6 +27,8 @@ namespace ServerApp
         
         public void ConfigureServices(IServiceCollection services)
         {
+            
+
             services.AddDbContext<AppDbContext>(options =>
                     options.UseNpgsql(Configuration.GetConnectionString("PostgresConnection")));
 
