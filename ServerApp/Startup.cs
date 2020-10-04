@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -5,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ServerApp.Data;
 using ServerApp.Data.Models;
+using ServerApp.Services;
 
 namespace ServerApp
 {
@@ -25,19 +26,23 @@ namespace ServerApp
         
         public void ConfigureServices(IServiceCollection services)
         {
-            if (HostingEnvironment.IsDevelopment())
-            {
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseInMemoryDatabase("InMemoryDB"));
-            }
-            else
-            {
-                services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                     options.UseNpgsql(Configuration.GetConnectionString("PostgresConnection")));
-            }
 
-            services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 4;
+            })
+            .AddEntityFrameworkStores<AppDbContext>();
+
+            services.AddCustomAuthentication(Configuration);
 
             services.AddControllers();
 
@@ -55,6 +60,15 @@ namespace ServerApp
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExpenseManager API");
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -62,6 +76,7 @@ namespace ServerApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
