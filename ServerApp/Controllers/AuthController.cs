@@ -18,13 +18,13 @@ namespace ServerApp.Controllers
     [AllowAnonymous]
     public class AuthController : ControllerBase
     {
-        private readonly TokenGenerator _tokenGenerator;
-        private readonly UserManager<User> _userManager;
+        private readonly TokenGenerator tokenGenerator;
+        private readonly UserManager<User> userManager;
 
         public AuthController(TokenGenerator tokenGenerator, UserManager<User> userManager)
         {
-            _tokenGenerator = tokenGenerator;
-            _userManager = userManager;
+            this.tokenGenerator = tokenGenerator ?? throw new ArgumentNullException(nameof(tokenGenerator));
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         [HttpPost]
@@ -45,7 +45,7 @@ namespace ServerApp.Controllers
                 Lang = "ru-RU"
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded == false)
             {
@@ -57,7 +57,7 @@ namespace ServerApp.Controllers
                 return new BadRequestObjectResult(new { Message = "Sing Up Failed", Errors = dictionary });
             }
             
-            var token = _tokenGenerator.GenerateToken(user.UserName, await _userManager.GetRolesAsync(user));
+            var token = tokenGenerator.GenerateToken(user.UserName, await userManager.GetRolesAsync(user));
            
             return Ok(new { Token = token, Message = "Sign Up Successful" });
         }
@@ -71,19 +71,19 @@ namespace ServerApp.Controllers
                 return new BadRequestObjectResult(new { Message = "Model not Valid" });
             }
 
-            var user = await _userManager.FindByNameAsync(model.Email);
+            var user = await userManager.FindByNameAsync(model.Email);
 
             if (user == null)
             {
                 return new NotFoundObjectResult(new { Message = "User not Found!" });
             }
 
-            if (await _userManager.CheckPasswordAsync(user, model.Password) == false)
+            if (await userManager.CheckPasswordAsync(user, model.Password) == false)
             {
                 return new BadRequestObjectResult(new { Message = "Sing In Failed" });
             }
 
-            var token = _tokenGenerator.GenerateToken(user.UserName, await _userManager.GetRolesAsync(user));
+            var token = tokenGenerator.GenerateToken(user.UserName, await userManager.GetRolesAsync(user));
             return Ok(new { Token = token, Message = "Sign In Successful" });
         }
     }

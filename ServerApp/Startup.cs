@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ServerApp.Data;
 using ServerApp.Data.Models;
+using ServerApp.Mapper;
 using ServerApp.Services;
 using System;
 
@@ -46,6 +48,8 @@ namespace ServerApp
             .AddEntityFrameworkStores<AppDbContext>();
 
             services.AddCustomAuthentication(Configuration);
+            
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
 
