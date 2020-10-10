@@ -12,6 +12,10 @@ using ServerApp.Data;
 using ServerApp.Data.Models;
 using ServerApp.Mapper;
 using ServerApp.Services;
+using ServerApp.Services.AuthService;
+using ServerApp.Services.CategoryService;
+using ServerApp.Services.UserService;
+using ServerApp.Validation;
 using System;
 
 namespace ServerApp
@@ -28,11 +32,9 @@ namespace ServerApp
         public IWebHostEnvironment HostingEnvironment { get; }
         
         public void ConfigureServices(IServiceCollection services)
-        {
-            
-
+        {           
             services.AddDbContext<AppDbContext>(options =>
-                    options.UseNpgsql(Configuration.GetConnectionString("PostgresConnection")));
+                    options.UseNpgsql(Configuration.GetConnectionString("PostgresConnection")));            
 
             services.AddIdentity<User, IdentityRole>(options =>
             {
@@ -51,7 +53,11 @@ namespace ServerApp
             
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddControllers();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+
+            services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute)));
 
             services.AddSwaggerGen(c =>
             {

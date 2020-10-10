@@ -28,7 +28,7 @@ namespace ServerApp.Controllers
         [Route("authorize")]        
         public IActionResult GetAuthorize()
         {            
-            return Ok($"ping {User.Identity.Name}");
+            return Ok($"authorized ping");
         }
     }
 }

@@ -20,8 +20,7 @@ namespace ServerApp.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
-            builder.Entity<Record>().HasKey(v => new { v.UserId, v.CategoryId });
+            base.OnModelCreating(builder);            
         }        
     }
 }

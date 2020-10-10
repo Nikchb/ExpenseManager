@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 namespace ServerApp.Data.Models
 {
     public class Record
-    {       
+    {  
+        [Key]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
         [Required]
         public string CategoryId { get; set; }
 

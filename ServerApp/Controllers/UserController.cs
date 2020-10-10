@@ -9,53 +9,42 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Services.UserService;
 
 namespace ServerApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UserController : ControllerBase
+    public class UserController : CustomControllerBase
     {
-        public readonly UserManager<User> userManager;
-        public readonly IMapper mapper;
+        private IUserService userService;
 
-        public UserController(UserManager<User> userManager, IMapper mapper)
+        public UserController(IUserService userService)
         {
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         [HttpGet]
-        public async Task<ActionResult<UserModel>> Get()
+        public async Task<IActionResult> Get()
         {
-            var user = await userManager.FindByNameAsync(User.Identity.Name);
-            if(user == null)
+            var result = await userService.Get(UserId);
+            if (result.Succeeded)
             {
-                return NotFound(new { Message = "User not found" });
+                return Ok(result.Response);
             }
-            return Ok(mapper.Map<User,UserModel>(user));
+            return BadRequest(result.Response);
         }
 
         [HttpPut]
-        public async Task<ActionResult<UserModel>> Put([FromBody] UserModel model)
+        public async Task<IActionResult> Put([FromBody] UserModel model)
         {
-            if (model == null || ModelState.IsValid == false)
+            var result = await userService.Update(UserId, model);
+            if (result.Succeeded)
             {
-                return new BadRequestObjectResult(new { Message = "Model not Valid" });
+                return Ok(result.Response);
             }
-
-            var user = await userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                return NotFound(new { Message = "User not found" });
-            }
-
-            mapper.Map(model, user);
-
-            await userManager.UpdateAsync(user);
-
-            return Ok(mapper.Map<User, UserModel>(user));
+            return BadRequest(result.Response);
         }
     }
 }

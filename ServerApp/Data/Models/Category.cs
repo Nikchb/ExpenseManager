@@ -10,7 +10,7 @@ namespace ServerApp.Data.Models
     public class Category
     {
         [Key]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         public string Title { get; set; }

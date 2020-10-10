@@ -174,14 +174,15 @@ namespace ServerApp.Migrations
 
             modelBuilder.Entity("ServerApp.Data.Models.Record", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CategoryId")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
@@ -193,9 +194,15 @@ namespace ServerApp.Migrations
                     b.Property<bool>("IsIncome")
                         .HasColumnType("boolean");
 
-                    b.HasKey("UserId", "CategoryId");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Records");
                 });

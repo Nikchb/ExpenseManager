@@ -43,11 +43,11 @@ namespace ServerApp.Services
             tokenHandler = new JwtSecurityTokenHandler();
         }
 
-        public string GenerateToken(string userName, IEnumerable<string> userRoles)
+        public string GenerateToken(string userId, IEnumerable<string> userRoles)
         {
             var claims = new ClaimsIdentity("Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
-            claims.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, userName));
+            claims.AddClaim(new Claim("UserId", userId));
 
             foreach (var role in userRoles)
             {
@@ -68,9 +68,9 @@ namespace ServerApp.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public string GenerateToken(string userName, params string[] userRoles)
+        public string GenerateToken(string userId, params string[] userRoles)
         {
-            return GenerateToken(userName, userRoles.AsEnumerable());
+            return GenerateToken(userId, userRoles.AsEnumerable());
         }
     }
 

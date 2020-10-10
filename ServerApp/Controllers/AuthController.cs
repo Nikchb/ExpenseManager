@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ServerApp.Data.Models;
 using ServerApp.Models;
 using ServerApp.Services;
+using ServerApp.Services.AuthService;
 
 namespace ServerApp.Controllers
 {
@@ -18,73 +20,35 @@ namespace ServerApp.Controllers
     [AllowAnonymous]
     public class AuthController : ControllerBase
     {
-        private readonly TokenGenerator tokenGenerator;
-        private readonly UserManager<User> userManager;
+        private readonly IAuthService authService;
 
-        public AuthController(TokenGenerator tokenGenerator, UserManager<User> userManager)
+        public AuthController(IAuthService authService)
         {
-            this.tokenGenerator = tokenGenerator ?? throw new ArgumentNullException(nameof(tokenGenerator));
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.authService = authService ?? throw new ArgumentNullException(nameof(authService));
         }
 
         [HttpPost]
         [Route("sign-up")]
         public async Task<IActionResult> SingUp([FromBody] SignUpModel model)
         {
-            if (model == null || ModelState.IsValid == false)
+            var result = await authService.SignUp(model);
+            if (result.Succeeded)
             {
-                return new BadRequestObjectResult(new { Message = "Model not Valid" });
+                return Ok(result.Response);
             }
-
-            var user = new User
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                Name = model.Name,
-                Bill = 10000,
-                Lang = "ru-RU"
-            };
-
-            var result = await userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded == false)
-            {
-                var dictionary = new ModelStateDictionary();
-                foreach (IdentityError error in result.Errors)
-                {
-                    dictionary.AddModelError(error.Code, error.Description);
-                }
-                return new BadRequestObjectResult(new { Message = "Sing Up Failed", Errors = dictionary });
-            }
-            
-            var token = tokenGenerator.GenerateToken(user.UserName, await userManager.GetRolesAsync(user));
-           
-            return Ok(new { Token = token, Message = "Sign Up Successful" });
+            return BadRequest(result.Response);
         }
 
         [HttpPost]
         [Route("sign-in")]
         public async Task<IActionResult> SignIn([FromBody] SignModel model)
         {
-            if (model == null || ModelState.IsValid == false)
+            var result = await authService.SignIn(model);
+            if (result.Succeeded)
             {
-                return new BadRequestObjectResult(new { Message = "Model not Valid" });
+                return Ok(result.Response);
             }
-
-            var user = await userManager.FindByNameAsync(model.Email);
-
-            if (user == null)
-            {
-                return new NotFoundObjectResult(new { Message = "User not Found!" });
-            }
-
-            if (await userManager.CheckPasswordAsync(user, model.Password) == false)
-            {
-                return new BadRequestObjectResult(new { Message = "Sing In Failed" });
-            }
-
-            var token = tokenGenerator.GenerateToken(user.UserName, await userManager.GetRolesAsync(user));
-            return Ok(new { Token = token, Message = "Sign In Successful" });
+            return BadRequest(result.Response);
         }
     }
 }
