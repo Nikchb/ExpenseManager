@@ -1,4 +1,7 @@
-import firebase from 'firebase/app'
+import getBaseUrl from '../services/api-info'
+import axios from 'axios'
+
+const URL = "/user"
 
 export default {
   state: {
@@ -14,12 +17,15 @@ export default {
   },
   actions: {
     async fetchInfo({dispatch, commit}) {
-      try {
-        const uid = await dispatch('getUid')
-        const info = (await firebase.database().ref(`/users/${uid}/info`).once('value')).val()
-        commit('setInfo', info)
-      } catch (e) {
+      let token = localStorage.getItem('token')
+      if(token){
+          axios.defaults.headers.common['Authorization'] = 'Bearer ' + token 
       }
+      await axios({url: getBaseUrl() + URL, method: 'GET' })
+      .then(resp => {
+        commit('setInfo', resp.data)
+      })
+      .catch(err => {})       
     }
   }, 
   getters: {

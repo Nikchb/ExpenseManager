@@ -1,36 +1,50 @@
-import firebase from 'firebase/app'
+import getBaseUrl from '../services/api-info'
+import axios from 'axios'
+
+const URL = "/category"
 
 export default {
-  actions: {
-    async fetchCategories({ commit, dispatch }) {
-      try {
-        const uid = await dispatch('getUid')
-        const categories = (await firebase.database().ref(`/users/${uid}/categories`).once('value')).val() || {}
-        const cats = []
-        return Object.keys(categories).map(key => ({ ...categories[key], id: key }))
-      } catch (e) {
-        commit('setError', e)
-        throw e
-      }
+  actions: {    
+    async fetchCategories({ commit }) {
+      let token = localStorage.getItem('token')
+      if(token){
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token 
+      }              
+      return await axios({url: getBaseUrl() + URL + '/all', method: 'GET' })
+      .then(resp => {         
+        return resp.data                 
+      })
+      .catch(err => {
+        if(err.status === 401){
+          commit('auth_error')
+        }
+      }) 
     },
-    async updateCategory({ commit, dispatch }, { title, limit, id }) {
-      try {
-        const uid = await dispatch('getUid')
-        await firebase.database().ref(`/users/${uid}/categories`).child(id).update({title, limit})
-      } catch (e) {
-        commit('setError', e)
-        throw e
+    async updateCategory({ commit }, { title, limit, id }) {      
+      let token = localStorage.getItem('token')
+      if(token){
+          axios.defaults.headers.common['Authorization'] = 'Bearer ' + token 
       }
+      await axios({url: getBaseUrl() + URL, data: { title, limit, id }, method: 'PUT' })
+      .then(resp => {})
+      .catch(err => {
+        if(err.status === 401){
+          commit('auth_error')
+        }
+      })     
     },
-    async createCategory({ commit, dispatch }, { title, limit }) {
-      try {
-        const uid = await dispatch('getUid')
-        const category = await firebase.database().ref(`/users/${uid}/categories`).push({ title, limit })
-        return { title, limit, id: category.key }
-      } catch (e) {
-        commit('setError', e)
-        throw e
+    async createCategory({ commit }, { title, limit }) {
+      let token = localStorage.getItem('token')
+      if(token){
+          axios.defaults.headers.common['Authorization'] = 'Bearer ' + token 
       }
+      await axios({url: getBaseUrl() + URL, data: { title, limit }, method: 'POST' })
+      .then(resp => {})
+      .catch(err => {
+        if(err.status === 401){
+          commit('auth_error')
+        }
+      })
     }
   }
 }

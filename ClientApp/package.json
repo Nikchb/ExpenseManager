@@ -7,8 +7,8 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "axios": "^0.20.0",
     "core-js": "^3.6.5",
-    "firebase": "^7.22.0",
     "materialize-css": "^1.0.0-rc.2",
     "register-service-worker": "^1.7.1",
     "serialize-javascript": "^4.0.0",
