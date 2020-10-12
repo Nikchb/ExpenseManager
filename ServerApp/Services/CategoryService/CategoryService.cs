@@ -24,7 +24,11 @@ namespace ServerApp.Services.CategoryService
 
         public async Task<ServiceResponse> Get(string userId)
         {
-            return new SucceededServiceResponse(context.Categories.Where(v => v.UserId == userId).ToArray());
+            return new SucceededServiceResponse(
+                context.Categories
+                .Where(v => v.UserId == userId)
+                .Select(v=> mapper.Map<Category, CategoryModel>(v))
+                .ToArray());
         }
 
         public async Task<ServiceResponse> Get(string userId, string categoryId)
