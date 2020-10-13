@@ -4,51 +4,62 @@
       <span class="card-title">Домашняя бухгалтерия</span>
       <div class="input-field">
         <input
-            id="email"
-            type="text"
-            v-model.trim="email"
-            :class="{invalid: ($v.email.$dirty && !$v.email.required) || ($v.email.$dirty && !$v.email.email)}"
-        >
+          id="email"
+          type="text"
+          v-model.trim="email"
+          :class="{
+            invalid:
+              ($v.email.$dirty && !$v.email.required) ||
+              ($v.email.$dirty && !$v.email.email),
+          }"
+        />
         <label for="email">Email</label>
-        <small 
+        <small
           class="helper-text invalid"
           v-if="$v.email.$dirty && !$v.email.required"
-        >Поле Email не должно быть пустым</small>
-        <small 
+          >Поле Email не должно быть пустым</small
+        >
+        <small
           class="helper-text invalid"
           v-else-if="$v.email.$dirty && !$v.email.email"
-        >Введите корретный Email</small>
+          >Введите корретный Email</small
+        >
       </div>
       <div class="input-field">
         <input
-            id="password"
-            type="password"
-            v-model.trim="password"
-            :class="{invalid: ($v.password.$dirty && !$v.password.required) || ($v.password.$dirty && !$v.password.minLength)}"
-        >
+          id="password"
+          type="password"
+          v-model.trim="password"
+          :class="{
+            invalid:
+              ($v.password.$dirty && !$v.password.required) ||
+              ($v.password.$dirty && !$v.password.minLength),
+          }"
+        />
         <label for="password">Пароль</label>
-        <small 
+        <small
           class="helper-text invalid"
           v-if="$v.password.$dirty && !$v.password.required"
         >
           Введите пароль
         </small>
-        <small 
+        <small
           class="helper-text invalid"
           v-else-if="$v.password.$dirty && !$v.password.minLength"
         >
-          Пароль должен быть {{$v.password.$params.minLength.min}} символов. Сейчас он {{password.length}}
+          Пароль должен быть {{ $v.password.$params.minLength.min }} символов.
+          Сейчас он {{ password.length }}
         </small>
       </div>
       <div class="input-field">
         <input
-            id="name"
-            type="text"
-            v-model.trim="name"
-            :class="{invalid: $v.name.$dirty && !$v.name.required}"
-        >
+          id="name"
+          type="text"
+          v-model.trim="name"
+          :class="{ invalid: $v.name.$dirty && !$v.name.required }"
+        />
         <label for="name">Имя</label>
-        <small 
+        <small
           class="helper-text invalid"
           v-if="$v.name.$dirty && !$v.name.required"
         >
@@ -64,10 +75,7 @@
     </div>
     <div class="card-action">
       <div>
-        <button
-            class="btn waves-effect waves-light auth-submit"
-            type="submit"
-        >
+        <button class="btn waves-effect waves-light auth-submit" type="submit">
           Зарегистрироваться
           <i class="material-icons right">send</i>
         </button>
@@ -82,40 +90,46 @@
 </template>
 
 <script>
-import {email, required, minLength} from 'vuelidate/lib/validators'
+import { email, required, minLength } from "vuelidate/lib/validators";
 
 export default {
-  name: 'register',
+  name: "register",
   data: () => ({
-    email: '',
-    password: '',
-    name: '',
-    agree: false
+    email: "",
+    password: "",
+    name: "",
+    agree: false,
   }),
   validations: {
-    email: {email, required},
-    password: {required, minLength: minLength(6)},
-    name: {required},
-    agree: {checked: v => v}
+    email: { email, required },
+    password: { required, minLength: minLength(6) },
+    name: { required },
+    agree: { checked: (v) => v },
   },
   methods: {
     async submitHandler() {
       if (this.$v.$invalid) {
-        this.$v.$touch()
-        return
+        this.$v.$touch();
+        return;
       }
 
       const formData = {
         email: this.email,
         password: this.password,
-        name: this.name
-      }
+        name: this.name,
+      };
 
       try {
-        await this.$store.dispatch('register', formData)
-        this.$router.push('/')
+        await this.$store.dispatch("register", formData);
+        this.$router.push("/");
       } catch (e) {}
+    },
+  },
+  async mounted() {
+    await this.$store.dispatch("init");
+    if (this.$store.getters.authorized) {
+      this.$router.push("/");
     }
-  }
-}
+  },
+};
 </script>
