@@ -12,6 +12,7 @@ using ServerApp.Data.Models;
 using ServerApp.Models;
 using ServerApp.Services;
 using ServerApp.Services.AuthService;
+using ServerApp.Services.Models;
 
 namespace ServerApp.Controllers
 {
@@ -29,6 +30,8 @@ namespace ServerApp.Controllers
 
         [HttpPost]
         [Route("sign-up")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]        
         public async Task<IActionResult> SingUp([FromBody] SignUpModel model)
         {
             var result = await authService.SignUp(model);
@@ -36,11 +39,13 @@ namespace ServerApp.Controllers
             {
                 return Ok(result.Response);
             }
-            return BadRequest(result.Response);
+            return BadRequest(result.Error);
         }
 
         [HttpPost]
         [Route("sign-in")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SignIn([FromBody] SignModel model)
         {
             var result = await authService.SignIn(model);
@@ -48,7 +53,7 @@ namespace ServerApp.Controllers
             {
                 return Ok(result.Response);
             }
-            return BadRequest(result.Response);
+            return BadRequest(result.Error);
         }
     }
 }

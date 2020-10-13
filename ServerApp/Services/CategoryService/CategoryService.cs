@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using ServerApp.Data;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ServerApp.Services.CategoryService
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : ServiceBase<CategoryModel>, ICategoryService
     {
         private readonly AppDbContext context;
         private readonly IMapper mapper;
@@ -22,30 +23,29 @@ namespace ServerApp.Services.CategoryService
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<ServiceResponse> Get(string userId)
+        public ServiceResponse<IEnumerable<CategoryModel>> Get(string userId)
         {
-            return new SucceededServiceResponse(
-                context.Categories
+            return Success(context.Categories
                 .Where(v => v.UserId == userId)
-                .Select(v=> mapper.Map<Category, CategoryModel>(v))
+                .Select(v => mapper.Map<Category, CategoryModel>(v))
                 .ToArray());
         }
 
-        public async Task<ServiceResponse> Get(string userId, string categoryId)
+        public async Task<ServiceResponse<CategoryModel>> Get(string userId, string categoryId)
         {
             var category = await context.Categories.FindAsync(categoryId);
             if(category == null)
             {
-                return new NotSucceededServiceResponse(new { Message = "Category not Found" });
+                return Error("Category not Found");
             }
             if(category.UserId != userId)
             {
-                return new NotSucceededServiceResponse(new { Message = "Access Forbidden" });
+                return Error("Access Forbidden");
             }
-            return new SucceededServiceResponse(mapper.Map<Category, CategoryModel>(category));
+            return Success(mapper.Map<Category, CategoryModel>(category));
         }
 
-        public async Task<ServiceResponse> Create(string userId, CreateCategoryModel model)
+        public async Task<ServiceResponse<CategoryModel>> Create(string userId, CreateCategoryModel model)
         {
             var category = mapper.Map<CreateCategoryModel, Category>(model);
             category.UserId = userId;
@@ -55,22 +55,26 @@ namespace ServerApp.Services.CategoryService
                 await context.SaveChangesAsync();
             }
             catch
-            {                
-                return new NotSucceededServiceResponse(new { Message = "Creation Failed" });
+            {
+                return Error("Creation Failed");
             }
-            return new SucceededServiceResponse(mapper.Map<Category, CategoryModel>(category));
+            return Success(mapper.Map<Category, CategoryModel>(category));
         }
 
-        public async Task<ServiceResponse> Update(string userId, CategoryModel model)
-        {            
+        public async Task<ServiceResponse<CategoryModel>> Update(string userId, CategoryModel model)
+        {
+            if(model.Id == null)
+            {
+                return Error("Category not Found");
+            }
             var category = await context.Categories.FindAsync(model.Id);
             if (category == null)
             {
-                return new NotSucceededServiceResponse(new { Message = "Category not Found" });
+                return Error("Category not Found");
             }
             if (category.UserId != userId)
             {
-                return new NotSucceededServiceResponse(new { Message = "Access Forbidden" });
+                return Error("Access Forbidden");
             }
             mapper.Map(model, category);
             try
@@ -79,21 +83,21 @@ namespace ServerApp.Services.CategoryService
             }
             catch
             {
-                return new NotSucceededServiceResponse(new { Message = "Update Failed" });
+                return Error("Update Failed"); 
             }
-            return new SucceededServiceResponse(mapper.Map<Category, CategoryModel>(category));
+            return Success(mapper.Map<Category, CategoryModel>(category));
         }
 
-        public async Task<ServiceResponse> Delete(string userId, string categoryId)
+        public async Task<ServiceResponse<CategoryModel>> Delete(string userId, string categoryId)
         {
             var category = await context.Categories.FindAsync(categoryId);
             if (category == null)
             {
-                return new NotSucceededServiceResponse(new { Message = "Category not Found" });
+                return Error("Category not Found");
             }
             if (category.UserId != userId)
             {
-                return new NotSucceededServiceResponse(new { Message = "Access Forbidden" });
+                return Error("Access Forbidden");
             }
             try
             {
@@ -102,9 +106,9 @@ namespace ServerApp.Services.CategoryService
             }
             catch
             {
-                return new NotSucceededServiceResponse(new { Message = "Delete Failed" });
+                return Error("Delete Failed");
             }
-            return new SucceededServiceResponse();
+            return Success();
         }         
     }
 }

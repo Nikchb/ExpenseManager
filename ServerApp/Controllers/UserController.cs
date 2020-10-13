@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Services.Models;
 using ServerApp.Services.UserService;
 
 namespace ServerApp.Controllers
@@ -26,6 +27,8 @@ namespace ServerApp.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
             var result = await userService.Get(UserId);
@@ -37,6 +40,8 @@ namespace ServerApp.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put([FromBody] UserModel model)
         {
             var result = await userService.Update(UserId, model);

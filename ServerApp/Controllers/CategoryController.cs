@@ -10,6 +10,7 @@ using ServerApp.Data;
 using ServerApp.Data.Models;
 using ServerApp.Models;
 using ServerApp.Services.CategoryService;
+using ServerApp.Services.Models;
 
 namespace ServerApp.Controllers
 {
@@ -25,19 +26,23 @@ namespace ServerApp.Controllers
         }
 
         [HttpGet]
-        [Route("all")]        
-        public async Task<IActionResult> Get()
+        [Route("all")]
+        [ProducesResponseType(typeof(IEnumerable<CategoryModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
+        public IActionResult Get()
         {
-            var result = await categoryService.Get(UserId);
+            var result = categoryService.Get(UserId);
             if (result.Succeeded)
             {
                 return Ok(result.Response);
             }
-            return BadRequest(result.Response);
+            return BadRequest(result.Error);
         }
 
         [HttpGet]
         [Route("{id}")]
+        [ProducesResponseType(typeof(CategoryModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get(string id)
         {
             var result = await categoryService.Get(UserId, id);
@@ -45,10 +50,12 @@ namespace ServerApp.Controllers
             {
                 return Ok(result.Response);
             }
-            return BadRequest(result.Response);
+            return BadRequest(result.Error);
         }
 
-        [HttpPost]        
+        [HttpPost]
+        [ProducesResponseType(typeof(CategoryModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] CreateCategoryModel model)
         {
             var result = await categoryService.Create(UserId, model);
@@ -56,10 +63,12 @@ namespace ServerApp.Controllers
             {
                 return Ok(result.Response);
             }
-            return BadRequest(result.Response);
+            return BadRequest(result.Error);
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(CategoryModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put([FromBody] CategoryModel model)
         {
             var result = await categoryService.Update(UserId, model);
@@ -67,19 +76,21 @@ namespace ServerApp.Controllers
             {
                 return Ok(result.Response);
             }
-            return BadRequest(result.Response);
+            return BadRequest(result.Error);
         }
 
         [HttpDelete]
         [Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(string id)
         {
             var result = await categoryService.Delete(UserId, id);
             if (result.Succeeded)
             {
-                return Ok(result.Response);
+                return Ok();
             }
-            return BadRequest(result.Response);
+            return BadRequest(result.Error);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ServerApp.Models;
+using ServerApp.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace ServerApp.Services.AuthService
 {
     public interface IAuthService
     {
-        public Task<ServiceResponse> SignIn(SignModel model);
-        public Task<ServiceResponse> SignUp(SignUpModel model);
+        public Task<ServiceResponse<string>> SignIn(SignModel model);
+        public Task<ServiceResponse<string>> SignUp(SignUpModel model);
     }
 }
