@@ -16,11 +16,7 @@ export default {
     }
   },
   actions: {
-    async fetchInfo({dispatch, commit}) {
-      let token = localStorage.getItem('token')
-      if(token){
-          axios.defaults.headers.common['Authorization'] = 'Bearer ' + token 
-      }
+    async fetchInfo({ commit}) {      
       await axios({url: getBaseUrl() + URL, method: 'GET' })
       .then(resp => {
         commit('setInfo', resp.data)

@@ -5,7 +5,7 @@ const URL = "/auth"
 
 export default { 
   state: {    
-    token: ''
+    token: undefined
   },
   mutations: { 
     init(state){
@@ -21,32 +21,32 @@ export default {
       localStorage.setItem('token', token)   
     },
     auth_error(state){
-      state.token = ''
+      state.token = undefined
       axios.defaults.headers.common['Authorization'] = ''
       localStorage.setItem('token','')
     },
     logout(state){     
-      state.token = ''
+      state.token = undefined
       axios.defaults.headers.common['Authorization'] = ''
       localStorage.setItem('token','')
     },
   },
   getters : {    
-    authorized: state => state.token != '',
+    authorized: state =>  state.token ? true : false,
   },
   actions: {
-    async init({commit}){
+    async init({ commit}){
       commit('init')
       await axios({url: getBaseUrl() + '/ping/authorize', method: 'GET'})
       .then(resp => {})
       .catch(err => {
-        commit('auth_error')
+        commit('auth_error')       
       })
     },
     async login({ commit }, { email, password }) {
       await axios({url: getBaseUrl() + URL + "/sign-in", data: { email, password }, method: 'POST' })
         .then(resp => {
-          commit('auth_success', resp.data.token)          
+          commit('auth_success', resp.data)          
         })
         .catch(err => {
           commit('auth_error')          
@@ -55,7 +55,7 @@ export default {
     async register({ commit }, {email, password, name}) {
       await axios({url: getBaseUrl() + URL + "/sign-up", data: { email, password, name }, method: 'POST' })
         .then(resp => {
-          commit('auth_success', resp.data.token)          
+          commit('auth_success', resp.data)          
         })
         .catch(err => {
           commit('auth_error')          
