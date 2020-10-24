@@ -14,6 +14,7 @@ using ServerApp.Mapper;
 using ServerApp.Services;
 using ServerApp.Services.AuthService;
 using ServerApp.Services.CategoryService;
+using ServerApp.Services.RecordService;
 using ServerApp.Services.UserService;
 using ServerApp.Validation;
 using System;
@@ -56,6 +57,7 @@ namespace ServerApp
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IRecordService, RecordService>();
 
             services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute)));
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using ServerApp.Data;
 using ServerApp.Data.Models;
 using ServerApp.Models.RecordModels;
@@ -13,12 +14,12 @@ namespace ServerApp.Services.RecordService
     public class RecordService : ServiceBase<RecordModel>, IRecordService
     {
         private readonly AppDbContext context;
-        private readonly IMapper mapper;
+        private readonly IMapper mapper;       
 
         public RecordService(AppDbContext context, IMapper mapper)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));           
         }
 
         public ServiceResponse<IEnumerable<RecordModel>> Get(string userId, RecordsFilterModel model)
@@ -54,8 +55,24 @@ namespace ServerApp.Services.RecordService
             {
                 return Error("Access Forbidden");
             }
-            var record = new Record();
-            mapper.Map<CreateRecordModel, Record>(model);
+            var user = await context.Users.FindAsync(userId);
+            if(user == null)
+            {
+                return Error("User not Found");
+            }
+            if (model.IsIncome)
+            {
+                user.Bill += model.Amount;
+            }
+            else
+            {                
+                user.Bill -= model.Amount;
+            }
+            if (user.Bill < 0)
+            {
+                return Error("Not enough money");
+            }
+            var record = mapper.Map<CreateRecordModel, Record>(model);
             record.UserId = userId;
             try
             {
@@ -85,7 +102,32 @@ namespace ServerApp.Services.RecordService
             if (category.UserId != userId || record.UserId != userId)
             {
                 return Error("Access Forbidden");
+            }
+            var user = await context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return Error("User not Found");
+            }
+            if (record.IsIncome)
+            {
+                user.Bill -= record.Amount;
+            }
+            else
+            {
+                user.Bill += record.Amount;
+            }
+            if (model.IsIncome)
+            {
+                user.Bill += model.Amount;
+            }
+            else
+            {
+                user.Bill -= model.Amount;
             }            
+            if (user.Bill < 0)
+            {
+                return Error("Not enough money");
+            }
             mapper.Map(model, record);
             record.UserId = userId;
             try
@@ -109,7 +151,24 @@ namespace ServerApp.Services.RecordService
             if (record.UserId != userId)
             {
                 return Error("Access Forbidden");
-            }            
+            }
+            var user = await context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return Error("User not Found");
+            }
+            if (record.IsIncome)
+            {
+                user.Bill -= record.Amount;
+            }
+            else
+            {
+                user.Bill += record.Amount;
+            }
+            if (user.Bill < 0)
+            {
+                return Error("Not enough money");
+            }
             try
             {
                 context.Records.Remove(record);

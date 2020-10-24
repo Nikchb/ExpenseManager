@@ -48,7 +48,7 @@ namespace ServerApp.Services.AuthService
                 UserName = model.Email,
                 Email = model.Email,
                 Name = model.Name,
-                Bill = 10000,
+                Bill = 0,
                 Lang = "ru-RU"
             };
 
