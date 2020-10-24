@@ -28,7 +28,7 @@ namespace ServerApp.Data.Models
         public decimal Amount { get; set; }
 
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
 
         [Required]
         public string Description { get; set; }

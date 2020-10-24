@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using ServerApp.Data;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Models.CategoryModels;
 using ServerApp.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -98,6 +100,10 @@ namespace ServerApp.Services.CategoryService
             if (category.UserId != userId)
             {
                 return Error("Access Forbidden");
+            }
+            if((await context.Records.FirstOrDefaultAsync(v=>v.CategoryId == category.Id)) != null)
+            {
+                return Error("Delete Rejected");
             }
             try
             {

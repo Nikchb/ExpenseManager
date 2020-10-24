@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Models.AuthModels;
 using ServerApp.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace ServerApp.Services.AuthService
                 UserName = model.Email,
                 Email = model.Email,
                 Name = model.Name,
-                Bill = 10000,
+                Bill = 0,
                 Lang = "ru-RU"
             };
 

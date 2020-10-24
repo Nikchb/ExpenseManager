@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace ServerApp.Models
+namespace ServerApp.Models.CategoryModels
 {
     public class CreateCategoryModel
     {

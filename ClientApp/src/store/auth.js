@@ -63,6 +63,7 @@ export default {
     },   
     async logout({commit}) {
       commit('logout')
+      commit('clearInfo')
     }
   }
 }
