@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Models.AuthModels;
 using ServerApp.Services;
 using ServerApp.Services.AuthService;
 using ServerApp.Services.Models;

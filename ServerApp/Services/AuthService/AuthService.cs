@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Models.AuthModels;
 using ServerApp.Services.Models;
 using System;
 using System.Collections.Generic;

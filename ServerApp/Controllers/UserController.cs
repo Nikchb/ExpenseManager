@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Models.UserModels;
 using ServerApp.Services.Models;
 using ServerApp.Services.UserService;
 

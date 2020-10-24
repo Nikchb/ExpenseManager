@@ -1,4 +1,5 @@
 ﻿using ServerApp.Models;
+using ServerApp.Models.CategoryModels;
 using ServerApp.Services.Models;
 using System;
 using System.Collections.Generic;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ServerApp.Data.Models;
 using ServerApp.Models;
+using ServerApp.Models.UserModels;
 using ServerApp.Services.Models;
 using System;
 using System.Collections.Generic;

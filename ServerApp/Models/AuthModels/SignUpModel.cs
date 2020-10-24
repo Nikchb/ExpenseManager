@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ServerApp.Models
+namespace ServerApp.Models.AuthModels
 {
-    public class CategoryModel : CreateCategoryModel
-    {        
+    public class SignUpModel : SignModel
+    {
         [Required]
-        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }

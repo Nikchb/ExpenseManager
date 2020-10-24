@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ServerApp.Models
+namespace ServerApp.Models.AuthModels
 {
     public class SignModel
     {

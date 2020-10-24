@@ -2,37 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ServerApp.Data;
-using ServerApp.Data.Models;
-using ServerApp.Models;
-using ServerApp.Models.CategoryModels;
-using ServerApp.Services.CategoryService;
+using ServerApp.Models.RecordModels;
 using ServerApp.Services.Models;
+using ServerApp.Services.RecordService;
 
 namespace ServerApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : CustomControllerBase
+    [Authorize]
+    public class RecordController : CustomControllerBase
     {
-        private readonly ICategoryService categoryService;
+        private readonly IRecordService recordService;
 
-        public CategoryController(ICategoryService categoryService)
+        public RecordController(IRecordService recordService)
         {
-            this.categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
+            this.recordService = recordService ?? throw new ArgumentNullException(nameof(recordService));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("all")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<RecordModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
-        public IActionResult Get()
+        public IActionResult Get([FromBody] RecordsFilterModel model)
         {
-            var result = categoryService.Get(UserId);
+            var result = recordService.Get(UserId, model);
             if (result.Succeeded)
             {
                 return Ok(result.Response);
@@ -42,11 +39,11 @@ namespace ServerApp.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [ProducesResponseType(typeof(CategoryModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RecordModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get(string id)
         {
-            var result = await categoryService.Get(UserId, id);
+            var result = await recordService.Get(UserId, id);
             if (result.Succeeded)
             {
                 return Ok(result.Response);
@@ -55,11 +52,11 @@ namespace ServerApp.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(CategoryModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RecordModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post([FromBody] CreateCategoryModel model)
+        public async Task<IActionResult> Post([FromBody] CreateRecordModel model)
         {
-            var result = await categoryService.Create(UserId, model);
+            var result = await recordService.Create(UserId, model);
             if (result.Succeeded)
             {
                 return Ok(result.Response);
@@ -68,11 +65,11 @@ namespace ServerApp.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(CategoryModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RecordModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Put([FromBody] CategoryModel model)
+        public async Task<IActionResult> Put([FromBody] UpdateRecordModel model)
         {
-            var result = await categoryService.Update(UserId, model);
+            var result = await recordService.Update(UserId, model);
             if (result.Succeeded)
             {
                 return Ok(result.Response);
@@ -86,7 +83,7 @@ namespace ServerApp.Controllers
         [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(string id)
         {
-            var result = await categoryService.Delete(UserId, id);
+            var result = await recordService.Delete(UserId, id);
             if (result.Succeeded)
             {
                 return Ok();
