@@ -16,6 +16,17 @@ export default {
         }
       }) 
     },
+    async fetchCategoryById({commit, dispatch}, id) {
+      return await axios({url: getBaseUrl() + URL + '/'+id, method: 'GET' })
+      .then(resp => {         
+        return resp.data                 
+      })
+      .catch(err => {
+        if(err.status === 401){
+          commit('auth_error')
+        }
+      })
+    },
     async updateCategory({ commit }, { title, limit, id }) {
       return await axios({url: getBaseUrl() + URL, data: { title, limit, id }, method: 'PUT' })
       .then(resp => {

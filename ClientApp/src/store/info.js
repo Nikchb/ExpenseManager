@@ -16,12 +16,27 @@ export default {
     }
   },
   actions: {
-    async fetchInfo({ commit}) {      
+    async fetchInfo({commit}) {      
       await axios({url: getBaseUrl() + URL, method: 'GET' })
       .then(resp => {
         commit('setInfo', resp.data)
       })
-      .catch(err => {})       
+      .catch(err => {
+        if(err.status === 401){
+          commit('auth_error')
+        }
+      })       
+    },
+    async updateInfo({commit}, {name, lang}) {      
+      await axios({url: getBaseUrl() + URL, method: 'PUT', data : {name, lang} })
+      .then(resp => {
+        commit('setInfo', resp.data)
+      })
+      .catch(err => {
+        if(err.status === 401){
+          commit('auth_error')
+        }
+      })       
     }
   }, 
   getters: {

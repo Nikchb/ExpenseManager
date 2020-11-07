@@ -16,8 +16,8 @@ export default {
             }
         })
       }, 
-      async fetchRecords({commit}, { startDate, endDate, categoryId}) {
-        return await axios({url: getBaseUrl() + URL + "/all", method: 'POST', data: { startDate, endDate, categoryId} })
+      async fetchRecordsByPeriod({commit}, { startDate, endDate}) {
+        return await axios({url: getBaseUrl() + URL + "/all", method: 'POST', data: { startDate, endDate } })
         .then(resp => {
             return resp.data;
         })
@@ -29,6 +29,17 @@ export default {
       },
       async fetchRecords({commit}) {
         return await axios({url: getBaseUrl() + URL + "/all", method: 'POST', data: {} })
+        .then(resp => {
+            return resp.data;
+        })
+        .catch(err => {
+            if(err.status === 401){
+                commit('auth_error')
+            }
+        })
+      },
+      async fetchRecordById({commit}, id) {
+        return await axios({url: getBaseUrl() + URL + "/" + id, method: 'GET' })
         .then(resp => {
             return resp.data;
         })
