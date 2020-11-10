@@ -1,6 +1,6 @@
 export default function getBaseUrl() {
-    if (process.env.NODE_ENV === "development") {
-        return "http://localhost:5000/api"
+    if (process.env.NODE_ENV === "Production") {
+        return ""
     }
-    return "http://serverapp:80/api"
+    return "http://localhost:5000/api"    
 }
