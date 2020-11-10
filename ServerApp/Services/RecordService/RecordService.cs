@@ -36,7 +36,7 @@ namespace ServerApp.Services.RecordService
             var record = await context.Records.FindAsync(recordId);
             if (record == null)
             {
-                return Error("Category not Found");
+                return Error("Record not Found");
             }
             if (record.UserId != userId)
             {

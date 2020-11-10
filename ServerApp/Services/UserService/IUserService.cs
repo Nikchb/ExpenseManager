@@ -12,6 +12,6 @@ namespace ServerApp.Services.UserService
     {
         public Task<ServiceResponse<UserModel>> Get(string userId);
 
-        public Task<ServiceResponse<UserModel>> Update(string userId, UserModel model);
+        public Task<ServiceResponse<UserModel>> Update(string userId, UpdateUserModel model);
     }
 }

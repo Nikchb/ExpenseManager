@@ -33,7 +33,7 @@ namespace ServerApp.Services.UserService
             return Success(mapper.Map<User, UserModel>(user));
         }
 
-        public async Task<ServiceResponse<UserModel>> Update(string userId, UserModel model)
+        public async Task<ServiceResponse<UserModel>> Update(string userId, UpdateUserModel model)
         {
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)

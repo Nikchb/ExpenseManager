@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ServerApp.Models.UserModels
 {
-    public class UserModel : UpdateUserModel
-    {        
+    public class UpdateUserModel
+    {
         [Required]
-        public decimal Bill { get; set; }        
+        public string Name { get; set; }
+        [Required]
+        public string Lang { get; set; }
     }
 }

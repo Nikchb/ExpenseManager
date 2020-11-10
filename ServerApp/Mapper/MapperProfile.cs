@@ -16,7 +16,7 @@ namespace ServerApp.Mapper
         public MapperProfile()
         {
             CreateMap<User, UserModel>();
-            CreateMap<UserModel, User>().ForMember(dest => dest.Bill, act => act.Ignore());            
+            CreateMap<UpdateUserModel, User>();            
             CreateMap<CreateCategoryModel, Category>();
             CreateMap<Category, CategoryModel>();
             CreateMap<CategoryModel, Category>()               

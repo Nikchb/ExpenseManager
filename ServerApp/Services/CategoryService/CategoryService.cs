@@ -64,11 +64,7 @@ namespace ServerApp.Services.CategoryService
         }
 
         public async Task<ServiceResponse<CategoryModel>> Update(string userId, CategoryModel model)
-        {
-            if(model.Id == null)
-            {
-                return Error("Category not Found");
-            }
+        {            
             var category = await context.Categories.FindAsync(model.Id);
             if (category == null)
             {

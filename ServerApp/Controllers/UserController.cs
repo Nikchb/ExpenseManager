@@ -43,7 +43,7 @@ namespace ServerApp.Controllers
         [HttpPut]
         [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceError), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Put([FromBody] UserModel model)
+        public async Task<IActionResult> Put([FromBody] UpdateUserModel model)
         {
             var result = await userService.Update(UserId, model);
             if (result.Succeeded)

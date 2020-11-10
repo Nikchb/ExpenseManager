@@ -30,9 +30,9 @@ Vue.use(VueRouter)
     component: () => import('../views/Register.vue')
   },
   {
-    path: '/detail',
+    path: '/detail/:id',
     name: 'detail',
-    meta: {layout: 'main', requiresAuth: true},
+    meta: {layout: 'main', auth: true},
     component: () => import('../views/Detail.vue')
   },
   {
@@ -75,9 +75,8 @@ router.beforeEach((to, from, next) => {
       return
     }
     next('/login')
-  } else {
-    next()
-  }
+  }  
+  next()  
 })
 
 export default router
