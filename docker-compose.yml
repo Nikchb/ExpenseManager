@@ -1,0 +1,37 @@
+version: "3.4"
+
+services:
+  clientapp:
+    image: ${DOCKER_REGISTRY-}clientapp
+    build:
+      context: ClientApp
+      dockerfile: DockerFile
+    environment:
+      NODE_ENV: Stage
+    ports:
+      - "80:80"
+  serverapp:
+    image: ${DOCKER_REGISTRY-}serverapp
+    build:
+      context: .
+      dockerfile: ServerApp/DockerFile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    ports:
+      - "5000:80"
+  database:
+    image: postgres:11
+    volumes:
+      - database:/var/lib/postgresql/data:Z
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5442:5432"
+
+volumes:
+  database:
+
+networks:
+  default:
+    driver: bridge
