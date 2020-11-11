@@ -20,17 +20,11 @@
     "ServerApp": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "/swagger",
+      "launchUrl": "statistics",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:5000"
-    },    
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/ping/anonymous",
-      "publishAllPorts": true
-    }
+    }  
   }
 }
