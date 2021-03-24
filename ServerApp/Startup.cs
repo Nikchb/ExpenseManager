@@ -61,6 +61,8 @@ namespace ServerApp
 
             services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute)));
 
+            services.AddRazorPages();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -76,6 +78,8 @@ namespace ServerApp
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+            app.UseStaticFiles();
 
             app.UseSwagger();
 
@@ -96,6 +100,7 @@ namespace ServerApp
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }
